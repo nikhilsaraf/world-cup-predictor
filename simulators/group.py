@@ -25,7 +25,11 @@ class GroupSimulator:
                 print "   {:>13} vs. {:13}:  {:>1} - {:1} ({})".format(teamA.name, teamB.name, matchResult.goalsFor(teamA), matchResult.goalsFor(teamB), matchResult.winnerString())
 
         # sort by points to find winners
-        groupTable.sort(key = lambda x: (x.points, x.goals_for - x.goals_against, x.goals_for, x.team.cost), reverse=True)
+        groupTable.sort(key = lambda x: (x.team.stats.group_points, x.team.stats.goals_for - x.team.stats.goals_against, x.team.stats.goals_for, x.team.cost), reverse=True)
+
+        # add points for progressing from a group
+        groupTable[0].team.stats.group_progress = 1
+        groupTable[1].team.stats.group_progress = 1
 
         printLine()
         print "    ",
@@ -52,34 +56,27 @@ class TableRow:
     WIN_POINTS = 3
     LOSE_POINTS = 0
     DRAW_POINTS = 1
-    DISPLAY_FORMATTER = "| {:>13} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} |  {:10}"
+    DISPLAY_FORMATTER = "| {:>13} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} | {:>2} | {:10}"
 
-    def __init__(self, team, points=0, played=0, win=0, lose=0, draw=0, goals_for=0, goals_against=0):
+    def __init__(self, team):
         self.team = team
-        self.points = points
-        self.played = played
-        self.win = win
-        self.lose = lose
-        self.draw = draw
-        self.goals_for = goals_for
-        self.goals_against = goals_against
 
     def record(self, matchResult):
-        self.played += 1
         if matchResult.goalsFor(self.team) == matchResult.goalsAgainst(self.team):
-            self.points += TableRow.DRAW_POINTS
-            self.draw += 1
+            self.team.stats.group_points += TableRow.DRAW_POINTS
+            self.team.stats.draw += 1
         elif matchResult.goalsFor(self.team) > matchResult.goalsAgainst(self.team):
-            self.points += TableRow.WIN_POINTS
-            self.win += 1
+            self.team.stats.group_points += TableRow.WIN_POINTS
+            self.team.stats.win += 1
         else:
-            self.points += TableRow.LOSE_POINTS
-            self.lose += 1
-        self.goals_for += matchResult.goalsFor(self.team)
-        self.goals_against += matchResult.goalsAgainst(self.team)
+            self.team.stats.group_points += TableRow.LOSE_POINTS
+            self.team.stats.lose += 1
+        self.team.stats.goals_for += matchResult.goalsFor(self.team)
+        self.team.stats.goals_against += matchResult.goalsAgainst(self.team)
 
     def printRow(self, result):
-        print TableRow.DISPLAY_FORMATTER.format(self.team.name, self.points, self.played, self.win, self.lose, self.draw, self.goals_for, self.goals_against, result)
+        played = self.team.stats.win + self.team.stats.lose + self.team.stats.draw
+        print TableRow.DISPLAY_FORMATTER.format(self.team.name, self.team.stats.group_points, played, self.team.stats.win, self.team.stats.lose, self.team.stats.draw, self.team.stats.goals_for, self.team.stats.goals_against, result)
 
     @staticmethod
     def printHeader():
