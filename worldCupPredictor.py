@@ -3,7 +3,7 @@
 
 from model.team import Team
 from model.group import Group
-from predictors.dummy import Predictor
+from predictors.cost import Predictor
 from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
 
