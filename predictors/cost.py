@@ -38,9 +38,6 @@ class Predictor:
         raise Exception("unable to predict for teams: " + str([teamA, teamB]))
 
     def _goalsForProbability(self, pWin, sumCost):
-        if pWin >= 0.9 and sumCost >= 90:
-            return (5, 0)
-
         if pWin >= 0.7:
             if sumCost >= 90:
                 return (4, 0)
