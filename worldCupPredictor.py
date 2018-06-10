@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from team import Team
-from group import Group
+from model.team import Team
+from model.group import Group
 
 def main():
     groups = makeGroups()
