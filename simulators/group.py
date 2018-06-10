@@ -19,7 +19,7 @@ class GroupSimulator:
                 rowA = groupTable[i]
                 rowB = groupTable[j]
 
-                matchResult = self.matchSimulator.simulateMatch(teamA, teamB)
+                matchResult = self.matchSimulator.simulateMatchWithDraws(teamA, teamB)
                 rowA.record(matchResult)
                 rowB.record(matchResult)
                 print "   {:>13} vs. {:13}:  {:>1} - {:1} ({})".format(teamA.name, teamB.name, matchResult.goalsFor(teamA), matchResult.goalsFor(teamB), matchResult.winnerString())

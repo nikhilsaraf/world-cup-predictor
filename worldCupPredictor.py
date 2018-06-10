@@ -3,9 +3,11 @@
 
 from model.team import Team
 from model.group import Group
+from model.bracket import Bracket
 from predictors.cost import Predictor
 from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
+from simulators.knockout import KnockoutSimulator
 
 def main():
     groups = makeGroups()
@@ -17,8 +19,31 @@ def main():
 
     predictor = Predictor()
     matchSimulator = MatchSimulator(predictor)
+
+    # simulate group
     groupSimulator = GroupSimulator(groups, matchSimulator)
     groupResults = groupSimulator.simulateAllGroups()
+
+    # simulate knockout
+    round16 = makeRound16(groupResults)
+    bracket = Bracket(round16)
+    koSimulator = KnockoutSimulator(bracket, matchSimulator)
+    koSimulator.simulateAllStages()
+
+    print ""
+    print "Finishing Order:"
+    print "Winner:   ", bracket.champion[0].name
+    print "Runner Up:", bracket.runnerUp[0].name
+    print "Third:    ", bracket.third[0].name
+
+def makeRound16(groupResults):
+    round16 = [None] * 16
+    for i in range(0, 8, 2):
+        round16[i] = groupResults[i].winner
+        round16[i + 1] = groupResults[i + 1].runner_up
+        round16[i + 8] = groupResults[i + 1].winner
+        round16[i + 8 + 1] = groupResults[i].runner_up
+    return round16
 
 def makeGroups():
     return [

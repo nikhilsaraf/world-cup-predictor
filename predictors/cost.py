@@ -37,6 +37,12 @@ class Predictor:
             return (0, 1)
         raise Exception("unable to predict for teams: " + str([teamA, teamB]))
 
+    def predictPenaltiesWinner(self, teamA, teamB):
+        # mild preference for teamB in penalties (>)
+        if teamA.cost > teamB.cost:
+            return teamA
+        return teamB
+
     def _goalsForProbability(self, pWin, sumCost):
         if pWin >= 0.7:
             if sumCost >= 90:

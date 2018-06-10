@@ -2,9 +2,22 @@ class MatchSimulator:
     def __init__(self, predictor):
         self.predictor = predictor
 
-    def simulateMatch(self, teamA, teamB):
+    def simulateMatchWithDraws(self, teamA, teamB):
         goals = self.predictor.predictGoals(teamA, teamB)
         return MatchResult(teamA, teamB, goals[0], goals[1])
+
+    def simulateMatchWithoutDraws(self, teamA, teamB):
+        goals = self.predictor.predictGoals(teamA, teamB)
+        if goals[0] != goals[1]:
+            return MatchResult(teamA, teamB, goals[0], goals[1])
+
+        penaltiesWinner = self.predictor.predictPenaltiesWinner(teamA, teamB)
+        if penaltiesWinner.name == teamA.name:
+            return MatchResult(teamA, teamB, goals[0] + 1, goals[1])
+        elif penaltiesWinner.name == teamB.name:
+            return MatchResult(teamA, teamB, goals[0], goals[1] + 1)
+        else:
+            raise Exception("error predicting penalties winner")
 
 class MatchResult:
     def __init__(self, teamA, teamB, goalsA, goalsB):
