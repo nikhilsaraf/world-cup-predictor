@@ -3,6 +3,9 @@
 
 from model.team import Team
 from model.group import Group
+from predictors.dummy import Predictor
+from simulators.match import MatchSimulator
+from simulators.group import GroupSimulator
 
 def main():
     groups = makeGroups()
@@ -10,6 +13,12 @@ def main():
         print "Group", g.name
         for t in g.teams:
             print "   ", t.name, unichr(163) + str(t.cost)
+    print ""
+
+    predictor = Predictor()
+    matchSimulator = MatchSimulator(predictor)
+    groupSimulator = GroupSimulator(groups, matchSimulator)
+    groupResults = groupSimulator.simulateAllGroups()
 
 def makeGroups():
     return [
