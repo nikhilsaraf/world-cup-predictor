@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from model.team import Team
+from model.team import Team, Stats
 from model.group import Group
 from model.bracket import Bracket
 from predictors.cost import Predictor
 from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
 from simulators.knockout import KnockoutSimulator
+from scoring import ScoringCriteria
 
 def main():
     groups = makeGroups()
@@ -35,6 +36,30 @@ def main():
     print "Winner:   ", bracket.champion[0].name
     print "Runner Up:", bracket.runnerUp[0].name
     print "Third:    ", bracket.third[0].name
+    print ""
+
+    # score teams
+    scoringCriteria = ScoringCriteria(Stats(10, 7, 5, 5, 2, 0, 3, -2, 5, 0))
+    teams = []
+    for g in groups:
+        for t in g.teams:
+            teamScore = scoringCriteria.teamScore(t)
+            teamTuple = (t, teamScore, float(teamScore)/float(t.cost))
+            teams.append(teamTuple)
+    teams.sort(key=lambda x: (x[2], -x[0].cost), reverse=True)
+
+    # display teams scored by best to worst based on a per-cost basis
+    print "Team Scores:"
+    printLine()
+    pFormat = "|    {:>13} | {:>6} | {:>6} | {:>8} |"
+    print pFormat.format("Team", "Score", "Cost", "S/C")
+    printLine()
+    for tup in teams:
+        print pFormat.format(tup[0].name, tup[1], tup[0].cost, "{:.4f}".format(tup[2]))
+    printLine()
+
+def printLine():
+    print "-------------------------------------------------"
 
 def makeRound16(groupResults):
     round16 = [None] * 16
