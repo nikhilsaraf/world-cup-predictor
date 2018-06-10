@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 class GroupSimulator:
     def __init__(self, groups, matchSimulator):
         self.groups = groups
@@ -23,7 +25,7 @@ class GroupSimulator:
                 print "   {:>13} vs. {:13}:  {:>1} - {:1} ({})".format(teamA.name, teamB.name, matchResult.goalsFor(teamA), matchResult.goalsFor(teamB), matchResult.winnerString())
 
         # sort by points to find winners
-        groupTable.sort(key = lambda x: x.points, reverse=True)
+        groupTable.sort(key = lambda x: (x.points, x.goals_for - x.goals_against, x.goals_for, x.team.cost), reverse=True)
 
         printLine()
         print "    ",
@@ -81,7 +83,8 @@ class TableRow:
 
     @staticmethod
     def printHeader():
-        print TableRow.DISPLAY_FORMATTER.format("Team", "P", "GP", "W", "L", "D", "GF", "GA", "")
+        star = " " + unichr(9733).encode('utf-8').strip()
+        print TableRow.DISPLAY_FORMATTER.format("Team", star, "P", "W", "L", "D", "GF", "GA", "")
 
 class GroupResult:
     def __init__(self, group, winner, runner_up):
