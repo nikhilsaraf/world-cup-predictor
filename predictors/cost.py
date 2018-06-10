@@ -10,7 +10,7 @@ class Predictor:
 
         pNotDraw = float(abs(a - b)) / (a + b)
         pDraw = 1.0 - pNotDraw
-        if pDraw >= 0.5:
+        if pDraw >= 0.55:
             if (a + b) >= 80:
                 return (3, 3)
             elif (a + b) >= 50:
@@ -45,13 +45,13 @@ class Predictor:
             if sumCost >= 90:
                 return (4, 0)
             elif sumCost >= 70:
-                return (3, 0)
-            elif sumCost >= 50:
                 return (3, 1)
+            elif sumCost >= 50:
+                return (3, 0)
             elif sumCost >= 30:
-                return (2, 0)
-            elif sumCost >= 15:
                 return (2, 1)
+            elif sumCost >= 15:
+                return (2, 0)
             else:
                 return (1, 0)
 
