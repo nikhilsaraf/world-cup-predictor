@@ -44,9 +44,10 @@ def main():
     for g in groups:
         for t in g.teams:
             teamScore = scoringCriteria.teamScore(t)
-            teamTuple = (t, teamScore, float(teamScore)/float(t.cost))
+            t.score = teamScore
+            teamTuple = (t, float(teamScore)/float(t.cost))
             teams.append(teamTuple)
-    teams.sort(key=lambda x: (x[2], -x[0].cost), reverse=True)
+    teams.sort(key=lambda x: (x[1], -x[0].cost), reverse=True)
 
     # display teams scored by best to worst based on a per-cost basis
     print "Team Scores:"
@@ -55,7 +56,7 @@ def main():
     print pFormat.format("Team", "Score", "Cost", "S/C")
     printLine()
     for tup in teams:
-        print pFormat.format(tup[0].name, tup[1], tup[0].cost, "{:.4f}".format(tup[2]))
+        print pFormat.format(tup[0].name, tup[0].score, tup[0].cost, "{:.4f}".format(tup[1]))
     printLine()
 
 def printLine():

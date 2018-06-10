@@ -3,6 +3,7 @@ class Team:
         self.name = name
         self.cost = cost
         self.stats = Stats()
+        self.score = 0
 
     def __repr__(self):
         return "Team({}, cost={})".format(self.name, self.cost)
