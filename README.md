@@ -33,6 +33,6 @@ Here are the picks based on the history (primary) and cost-based (secondary) pre
 --------------------------------------------------------------
    Total Cost = £247
 
-   Total Score = 306 (incld. underfunded score = 0.6)
+   Total Score = 306.6 (incld. underfunded score = 0.6)
 
 --------------------------------------------------------------

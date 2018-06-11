@@ -81,7 +81,7 @@ def main():
     printLine()
     if DISPLAY_FINAL_STATS:
         print "   Total Cost = {}{}".format(currency, cost)
-        print "   Total Score = {} (incld. underfunded score = {})".format(score, underfundedScore)
+        print "   Total Score = {:.1f} (incld. underfunded score = {})".format(score + underfundedScore, underfundedScore)
     else:
         print "   Total Cost {:>19}{}".format(currency, cost)
     printLine()
