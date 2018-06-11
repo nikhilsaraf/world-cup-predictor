@@ -9,13 +9,17 @@ from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
 from simulators.knockout import KnockoutSimulator
 from scoring import ScoringCriteria
+from picker import Picker
+
+DISPLAY_FINAL_STATS = True
 
 def main():
+    currency = unichr(163).encode('utf-8').strip()
     groups = makeGroups()
     for g in groups:
         print "Group", g.name
         for t in g.teams:
-            print "   ", t.name, unichr(163) + str(t.cost)
+            print "   ", t.name, currency + str(t.cost)
     print ""
 
     predictor = Predictor()
@@ -57,6 +61,28 @@ def main():
     printLine()
     for tup in teams:
         print pFormat.format(tup[0].name, tup[0].score, tup[0].cost, "{:.4f}".format(tup[1]))
+    printLine()
+    print ""
+
+    print "Picks:"
+    # pick best team from all the groups (picker params taken from scoring criteria)
+    groupPicks, score, underfundedScore, cost = Picker(250, 0.2, 10).bestPick(groups)
+    i = 1
+    for g in groupPicks:
+        for t in g.picks:
+            print "   {:2}. (Group {:1}) {:13}".format(i, g.group.name, t.name),
+            if DISPLAY_FINAL_STATS:
+                print " (score = {:6} cost = {}{:5} s/c = {:>5.2f})".format(str(t.score) + ",", currency, str(t.cost) + ",", float(t.score)/float(t.cost)),
+            else:
+                print currency + str(t.cost),
+            print ""
+            i += 1
+    printLine()
+    if DISPLAY_FINAL_STATS:
+        print "   Total Cost = {}{}".format(currency, cost)
+        print "   Total Score = {} (incld. underfunded score = {})".format(score, underfundedScore)
+    else:
+        print "   Total Cost {:>19}{}".format(currency, cost)
     printLine()
 
 def printLine():
