@@ -4,7 +4,8 @@
 from model.team import Team, Stats
 from model.group import Group
 from model.bracket import Bracket
-from predictors.history import Predictor
+from predictors.cost import Predictor as CostPredictor
+from predictors.history import Predictor as HistoryPredictor
 from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
 from simulators.knockout import KnockoutSimulator
@@ -22,7 +23,7 @@ def main():
             print "   ", t.name, currency + str(t.cost)
     print ""
 
-    predictor = Predictor()
+    predictor = HistoryPredictor(CostPredictor())
     matchSimulator = MatchSimulator(predictor)
 
     # simulate group

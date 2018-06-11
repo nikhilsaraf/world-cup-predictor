@@ -3,7 +3,8 @@ import requests
 import re
 
 class Predictor:
-    def __init__(self):
+    def __init__(self, secondaryPredictor):
+        self.secondaryPredictor = secondaryPredictor
         self.baseURL = "https://raw.githubusercontent.com/openfootball/world-cup/master/"
         self.folders = [
 #            "1930--uruguay",
@@ -42,6 +43,7 @@ class Predictor:
             return "DataPoint({} {}-{} {})".format(self.teamA, self.goalsA, self.goalsB, self.teamB)
 
     def learn(self):
+        print "Learning from history..."
         self.data = {}
         for folder in self.folders:
             for filename in self.filenames:
@@ -80,25 +82,43 @@ class Predictor:
     #        print k
     #        for d in self.data[k]:
     #            print "    ", d
+        print "...finished learning\n"
 
     def predictGoals(self, teamA, teamB):
         if teamA.name not in self.data and teamB.name not in self.data:
-            return (0, 0)
-        elif teamA.name not in self.data:
-            return (0, 2)
-        elif teamB.name not in self.data:
-            return (2, 0)
+            return self.secondaryPredictor.predictGoals(teamA, teamB)
+
+        if teamA.name not in self.data:
+            print "    (predicting from " + teamB.name + "'s history)"
+            points = self.data[teamB.name]
+            # flip A/B because we're looking at B's data
+            goalsB = sum([d.goalsA for d in points])/len(points)
+            goalsA = sum([d.goalsB for d in points])/len(points)
+            return (goalsA, goalsB)
+        if teamB.name not in self.data:
+            print "    (predicting from " + teamA.name + "'s history)"
+            points = self.data[teamA.name]
+            goalsA = sum([d.goalsA for d in points])/len(points)
+            goalsB = sum([d.goalsB for d in points])/len(points)
+            return (goalsA, goalsB)
 
         points = self.data[teamA.name]
         relevant = [d for d in points if d.teamB == teamB.name]
         if len(relevant) == 0:
+            print "    (predicting from average of both teams' history)"
             # they never played each other
-            return (1, 1)
+            goalsA1 = sum([d.goalsA for d in points])/len(points)
+            goalsB1 = sum([d.goalsB for d in points])/len(points)
+            # flip A/B because we're looking at B's data
+            points = self.data[teamB.name]
+            goalsB2 = sum([d.goalsA for d in points])/len(points)
+            goalsA2 = sum([d.goalsB for d in points])/len(points)
+            return ((goalsA1 + goalsA2)/2, (goalsB1 + goalsB2)/2)
 
+        print "    (predicting from vs. match history)"
         goalsA = sum([d.goalsA for d in relevant])/len(relevant)
         goalsB = sum([d.goalsB for d in relevant])/len(relevant)
         return (goalsA, goalsB)
 
-    # make teamB always win for now
     def predictPenaltiesWinner(self, teamA, teamB):
-        return teamB
+        return self.secondaryPredictor.predictPenaltiesWinner(teamA, teamB)
