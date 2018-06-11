@@ -4,6 +4,10 @@ code to help select teams for the soccer world cup 2018 based on some team selec
 # Selection Criteria
 ![Criteria Image failed to load](https://github.com/nikhilsaraf/world-cup-predictor/blob/master/creteria.jpg)
 
+# Running
+
+You can run `worldCupPredictor.py` directly to see the simulation and picking results
+
 # Picks
 
 Here are the picks based on the simple cost-based predictor:
