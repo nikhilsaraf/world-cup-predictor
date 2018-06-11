@@ -4,7 +4,7 @@
 from model.team import Team, Stats
 from model.group import Group
 from model.bracket import Bracket
-from predictors.cost import Predictor
+from predictors.history import Predictor
 from simulators.match import MatchSimulator
 from simulators.group import GroupSimulator
 from simulators.knockout import KnockoutSimulator
