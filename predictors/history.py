@@ -89,14 +89,14 @@ class Predictor:
             return self.secondaryPredictor.predictGoals(teamA, teamB)
 
         if teamA.name not in self.data:
-            print "    (predicting from " + teamB.name + "'s history)"
+            #print "    (predicting from " + teamB.name + "'s history)"
             points = self.data[teamB.name]
             # flip A/B because we're looking at B's data
             goalsB = sum([d.goalsA for d in points])/len(points)
             goalsA = sum([d.goalsB for d in points])/len(points)
             return (goalsA, goalsB)
         if teamB.name not in self.data:
-            print "    (predicting from " + teamA.name + "'s history)"
+            #print "    (predicting from " + teamA.name + "'s history)"
             points = self.data[teamA.name]
             goalsA = sum([d.goalsA for d in points])/len(points)
             goalsB = sum([d.goalsB for d in points])/len(points)
@@ -105,7 +105,7 @@ class Predictor:
         points = self.data[teamA.name]
         relevant = [d for d in points if d.teamB == teamB.name]
         if len(relevant) == 0:
-            print "    (predicting from average of both teams' history)"
+            #print "    (predicting from average of both teams' history)"
             # they never played each other
             goalsA1 = sum([d.goalsA for d in points])/len(points)
             goalsB1 = sum([d.goalsB for d in points])/len(points)
@@ -115,7 +115,7 @@ class Predictor:
             goalsA2 = sum([d.goalsB for d in points])/len(points)
             return ((goalsA1 + goalsA2)/2, (goalsB1 + goalsB2)/2)
 
-        print "    (predicting from vs. match history)"
+        #print "    (predicting from vs. match history)"
         goalsA = sum([d.goalsA for d in relevant])/len(relevant)
         goalsB = sum([d.goalsB for d in relevant])/len(relevant)
         return (goalsA, goalsB)
